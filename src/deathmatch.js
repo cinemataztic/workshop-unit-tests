@@ -74,10 +74,18 @@ function addPlayer(name) {
         players.push(player);
     } catch (error) {
         console.error(`Error loading player type '${name}':`, error.message);
+        process.exit(1);
     }
 }
 
 function compete() {
+
+    if (args.length !== 4) {
+        console.error("Error: Please provide exactly two player names.");
+        process.exit(1);
+    }
+    
+
     for (const name of args.slice(2)) {
         addPlayer(name);
     }

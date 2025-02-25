@@ -4,17 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "node src/deathmatch.js",
     "test": "jest tests/"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@slack/bolt": "^4.2.0",
-    "dotenv": "^16.4.7",
-    "express": "^5.0.1",
-    "perf_hooks": "^0.0.1",
-    "socket.io": "^4.8.1"
   },
   "devDependencies": {
     "jest": "^29.7.0"

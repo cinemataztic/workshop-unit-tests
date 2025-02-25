@@ -14,4 +14,15 @@ Come up with the unit tests that you need to code your work, as there is no othe
 
 If you miss the target, you recoil and jump -20 down and to the left.
 
+(HTML5 PLAYER RULES that you have to interact with the document, even click once on it, before the gunshot can play)
+
+
+## To RUN
+
+1. Run `npm install`
+2. Copy the file players/template.js and make your own, eg john.js.
+3. Copy the test file in tests/template.js and make your own eg john.test.js
+4. `npm test` runs your tests
+5. `npm start -- peter john` replacing the two names with the contestants
+
 ---
