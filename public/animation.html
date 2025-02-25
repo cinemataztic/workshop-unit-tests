@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Western Shootout</title>
+    <style>
+        body {
+            text-align: center;
+            font-family: Arial, sans-serif;
+            background-color: #f4e1c1;
+        }
+        canvas {
+            background-color: #87CEEB;
+            display: block;
+            margin: auto;
+            border: 2px solid black;
+        }
+        #log {
+            margin-top: 20px;
+            padding: 10px;
+            background: #fff;
+            border: 1px solid black;
+            height: 100px;
+            overflow-y: auto;
+            white-space: pre-line;
+        }
+    </style>
+</head>
+<body>
+    <h1>Western Shootout</h1>
+    <div id="players"></div>
+    <canvas id="shootoutCanvas" width="600" height="400"></canvas>
+    <div id="log"></div>
+    
+    <script>
+        const canvas = document.getElementById("shootoutCanvas");
+        const ctx = canvas.getContext("2d");
+        const logDiv = document.getElementById("log");
+        let players = [];
+        let winner = "";
+        let loser = "";
+        let loserIndex = 1; // Default: second player loses
+        let gameOver = false; // Ensures both stand initially
+
+        async function loadPlayers() {
+            const response = await fetch("../winner.txt");
+            const text = await response.text();
+            const lines = text.trim().split("\n");
+
+            if (lines.length >= 3) {
+                players = [lines[0], lines[1]];
+                winner = lines[2];
+                loser = players[0] === winner ? players[1] : players[0]; // Determine the loser
+                loserIndex = players[0] === loser ? 0 : 1; // Get loser index (0 = left, 1 = right)
+
+                document.getElementById("players").innerHTML = `<h2>${players[0]} vs ${players[1]}</h2>`;
+                drawScene(); // Initial drawing (both standing)
+
+                setTimeout(() => shoot(loserIndex, winner), 5000); // Announce winner after 5 sec
+            }
+        }
+
+        function drawScene() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw ground
+            ctx.fillStyle = "#c2b280";
+            ctx.fillRect(0, 300, canvas.width, 100);
+            
+            // Draw left player (brown cowboy)
+            ctx.fillStyle = "brown";
+            if (gameOver && loserIndex === 0) {
+                drawFallenCowboy(100, 260); // Loser falls
+            } else {
+                drawStandingCowboy(100, 220); // Stands normally
+            }
+            ctx.fillStyle = "black";
+            ctx.fillText(players[0] || "Player 1", 85, 320);
+            
+            // Draw right player (blue cowboy)
+            ctx.fillStyle = "blue";
+            if (gameOver && loserIndex === 1) {
+                drawFallenCowboy(450, 260); // Loser falls
+            } else {
+                drawStandingCowboy(450, 220); // Stands normally
+            }
+            ctx.fillStyle = "black";
+            ctx.fillText(players[1] || "Player 2", 440, 320);
+        }
+
+        function drawStandingCowboy(x, y) {
+            ctx.fillRect(x, y, 50, 80); // Body
+            ctx.beginPath();
+            ctx.arc(x + 25, y - 20, 20, 0, Math.PI * 2); // Head
+            ctx.fill();
+        }
+
+        function drawFallenCowboy(x, y) {
+            ctx.save();
+            ctx.translate(x, y);
+            ctx.rotate(Math.PI / 2); // Rotate to make them fall
+            ctx.fillRect(0, 0, 50, 80);
+            ctx.restore();
+        }
+        
+        function shoot(loserIndex, winnerName) {
+            gameOver = true; // Marks game as over so loser falls
+            setTimeout(() => {
+                drawScene();
+                ctx.fillStyle = "black";
+                ctx.font = "20px Arial";
+                ctx.fillText(`${winnerName} wins!`, 250, 150);
+            }, 1000);
+        }
+
+        async function streamLog() {
+            const response = await fetch("../logs.txt");
+            const text = await response.text();
+            const lines = text.trim().split("\n");
+            let index = 0;
+            
+            function displayNextLine() {
+                if (index < lines.length) {
+                    logDiv.innerHTML += lines[index] + "<br>";
+                    logDiv.scrollTop = logDiv.scrollHeight;
+                    index++;
+                    setTimeout(displayNextLine, 50);
+                }
+            }
+            displayNextLine();
+        }
+        
+        loadPlayers();
+        streamLog();
+    </script>
+</body>
+</html>
