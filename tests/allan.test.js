@@ -1,9 +1,10 @@
 // Replace with your character team name (no .js extension)
-const actor = require("../players/template");
+const actor = require("../players/allan");
 
 // to run tests type "npm test" from project root in terminal
 
 describe("the design tests for the shootout character", () => {
+    
     test("the player exists", () => {
         const currentX = -99;
         const currentY = -99;
@@ -31,7 +32,7 @@ describe("the design tests for the shootout character", () => {
 
         const result = actor.aim(currentX, currentY);
         expect(result.shoot).toBe(true);
-    })
+    });
 
     test("aims if coordinates are off target", () => {
         let result = { x: -99, y: -99, shoot: false }
@@ -44,7 +45,18 @@ describe("the design tests for the shootout character", () => {
         expect(result.x).toBe(0);
         expect(result.y).toBe(50);
         console.log("allan turns: ", turns);
-    })
+    });
+
+    test("does not move more than 5 units", () => {
+        const currentX = -99;
+        const currentY = -99;
+
+        const result = actor.aim(currentX, currentY);
+        const movedUnits = Math.abs(currentX - result.x) + Math.abs(currentY - result.y);
+
+        expect(movedUnits).toBeLessThanOrEqual(5);
+    });
+
 });
 
 /*
