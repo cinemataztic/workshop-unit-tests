@@ -1,7 +1,5 @@
 node_modules/
 .vscode/
-players/john.js
 players/peter.js
-tests/john.test.js
 public/logs.txt
 public/winner.txt
